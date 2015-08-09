@@ -620,6 +620,9 @@ or kebab-case
 (defvar deft-mode-hook nil
   "Hook run when entering Deft mode.")
 
+(defvar deft-filter-hook nil
+  "Hook run when the Deft filter string changes.")
+
 (defvar deft-filter-regexp nil
   "A list of string representing the current filter used by Deft.
 
@@ -1353,7 +1356,8 @@ replace the entire filter string."
         (setq deft-filter-regexp (list str))
       (setq deft-filter-regexp nil)))
   (deft-filter-update)
-  (deft-refresh-browser))
+  (deft-refresh-browser)
+  (run-hooks 'deft-filter-hook))
 
 (defun deft-filter-increment ()
   "Append character to the filter regexp and update `deft-current-files'."
@@ -1370,7 +1374,8 @@ replace the entire filter string."
 	  (setq deft-filter-regexp (list char)))
 	(setq deft-current-files (deft-filter-files deft-current-files))
 	(setq deft-current-files (delq nil deft-current-files))
-	(deft-refresh-browser)))))
+	(deft-refresh-browser)
+	(run-hooks 'deft-filter-hook)))))
 
 (defun deft-filter-decrement ()
   "Remove last character from the filter, if possible, and update.
