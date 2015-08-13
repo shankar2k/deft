@@ -949,7 +949,7 @@ Case is ignored."
 
 (defun deft-buffer-setup ()
   "Render the file browser in the *Deft* buffer."
-  (setq deft-window-width (window-width))
+  (setq deft-window-width (window-width (get-buffer-window deft-buffer t)))
   (let ((inhibit-read-only t))
     (erase-buffer))
   (remove-overlays)
@@ -1313,7 +1313,8 @@ Deft buffer."
   (when deft-filter-regexp
     (setq deft-filter-regexp nil)
     (setq deft-current-files deft-all-files)
-    (deft-refresh))
+    (deft-refresh)
+    (run-hooks 'deft-filter-hook))
   (message "Filter cleared."))
 
 (defun deft-filter (str &optional reset)
