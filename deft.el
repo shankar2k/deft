@@ -623,6 +623,9 @@ or kebab-case
 (defvar deft-filter-hook nil
   "Hook run when the Deft filter string changes.")
 
+(defvar deft-open-file-hook nil
+  "Hook run after Deft opens a file.")
+
 (defvar deft-filter-regexp nil
   "A list of string representing the current filter used by Deft.
 
@@ -1016,7 +1019,8 @@ call the original string-width otherwise"
 (add-hook 'window-configuration-change-hook
           (lambda ()
             (when (and (eq (current-buffer) (get-buffer deft-buffer))
-                       (not (eq deft-window-width (window-width))))
+                       (not (eq deft-window-width
+				(window-width (get-buffer-window deft-buffer t)))))
               (deft-buffer-setup))))
 
 (defun deft-refresh ()
@@ -1112,6 +1116,7 @@ FILE must be a relative or absolute path, with extension."
                              (deft-cache-update-file buffer-file-name)
                              (deft-refresh-filter)))
                 nil t))
+    (run-hooks 'deft-open-file-hook))
     (if other
         (if switch
             (switch-to-buffer-other-window buffer)
